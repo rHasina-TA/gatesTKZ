@@ -1,0 +1,353 @@
+%% Flip-Flop SR  
+
+\def \SRFF (#1)#2#3#4#5#6{%
+	% 1st param = shift  or offsets (x, y) 
+	% 2nd param = title 
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color of the block
+	% 6th param = ID for pin connections
+
+  \begin{scope}[shift={(#1)}]
+
+    \draw [line width = 1.4, fill = #5] 
+		(0.0, 0.0) rectangle (#3, #4);	% rect bloc
+	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $};
+
+    \draw  [line width=1.4] 
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (R#6);	% as input
+    \draw  [line width=1.4] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (S#6);	% input wire
+    \draw  [line width=1.4]
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw  [line width=1.4] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+	\coordinate (R) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (S) at (0.0+0.2, #4 - 0.2);
+
+	\coordinate (Qb) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3-0.2, #4 - 0.4);		
+
+	\draw (R) node[]{$R$}; 
+	\draw (S) node[]{$S$}; 
+	\draw (Q) node[]{$Q$}; 
+	\draw (Qb) node[]{$\mathrm{\overline{Q}}$}; 	
+  \end{scope}
+}
+
+% Flip-Flop D, triggered on rising edge
+\def\DFFrise (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offsets (x, y)
+	% 2nd param = title
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color of the block
+	% 6th param = ID for pin connections
+	
+  \begin{scope}[shift={(#1)}]
+
+	\draw [line width = 1.4, fill = #5] 
+		%(0,0) rectangle (1.2, 1.4);			% rect bloc
+		(0.0, 0.0) rectangle (#3, #4);			% rect bloc
+	
+
+    \draw  [line width=1.4] 
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (Ck#6); %  as input
+    \draw  [line width=1.4] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (D#6); % input wire
+    \draw  [line width=1.4] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw  [line width=1.4] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+	\coordinate (Ck) at (0.0+0.6, 0.0 + 0.2);
+	\coordinate (D) at (0.0+0.2, #4 - 0.2);
+
+	\coordinate (Qb) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 -0.2, #4 - 0.4);
+		
+	\draw [line width=1.4] 
+		( 0.0, 0.0+0.2-0.1)--++(0.2, 0.1)--++(-0.2, 0.1);  % TRIANGLE  
+
+	\draw (D) node[]{$D$}; 
+	\draw (Ck) node[]{$Ck$}; 
+	\draw (Q) node[]{$Q$}; 
+	\draw (Qb) node[]{$\mathrm{\overline{Q}}$}; 	
+  \end{scope}
+}
+
+
+% Flip-Flop D, triggered on falling edge
+\def\DFFfall (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offsets (x, y)
+	% 2nd param = title
+		% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color of the block
+	% 6th param = ID for pin connections
+	
+  \begin{scope}[shift={(#1)}]
+
+    \draw [line width = 1.4, fill = #5] 
+		%(0,0) rectangle (1.2, 1.4);			% rect bloc
+		(0.0, 0.0) rectangle (#3, #4);			% rect bloc
+
+    \draw  [line width=1.4] 
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (Ck#6); %  as input
+	\draw [line width=1.2, fill = #5] 
+		(-0.1, {#4/2}) circle (0.1);
+    \draw  [line width=1.4] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (D#6); % input wire
+    \draw  [line width=1.4] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw  [line width=1.4] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+	\coordinate (Ck) at (0.0+0.6, 0.0 + 0.2);
+	\coordinate (D) at (0.0+0.2, #4 - 0.2);
+
+	\coordinate (Qb) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 -0.2, #4 - 0.4);
+		
+	\draw [line width=1.4] 
+		( 0.0, 0.0+0.2-0.1)--++(0.2, 0.1)--++(-0.2, 0.1);  % TRIANGLE  
+
+	\draw (D) node[]{$D$}; 
+	\draw (Ck) node[]{$Ck$}; 
+	\draw (Q) node[]{$Q$}; 
+	\draw (Qb) node[]{$\mathrm{\overline{Q}}$}; 	
+  \end{scope}
+}
+
+
+
+% definition de la bascule JK (sans Preset et Clear) 
+% Flip-Flop JK without Preset and Clear 
+\def\JKFF (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offsets (x, y) 
+	% 2nd param = title
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color 
+	% 6th param = ID for pin connections
+	
+  \begin{scope}[shift={(#1)}]
+	% rect block 
+    \draw [line width=1.4, fill=#5] (0,0) 
+		rectangle (#3, #4);
+	% EDGE triangle
+	\draw [line width=1.2]
+		(0.0, {#4/2.0 + 0.15}) --++ (0.2, -0.15) --++(-0.2, -0.15);
+	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $};  % text of the block
+
+    \draw [line width=1.5] 
+    (0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (K#6);		% input wire
+    \draw [line width=1.5] 
+    (0.0, {#4/2.0}) --++({-1*#3}, 0.0) coordinate (CLK#6);  % clock 
+
+    \draw [line width=1.5] 
+		(0.0, {#4 - 0.2}) --++ (-0.5, 0.0) coordinate (J#6);	% input 
+
+    \draw [line width=1.5] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#2); % output Q
+    \draw [line width=1.5] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+
+	\coordinate (K) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (J) at (0.0+0.2, {(#4) - 0.2});
+	\coordinate (QB) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 -0.2, #4 - 0.4);		% Q
+
+	\draw (K) node[]{\small $K$}; 
+	\draw (J) node[]{\small $J$}; 
+	\draw (Q) node[]{\small$Q$}; 
+	\draw (QB) node[]{\small $\overline{Q}$}; 	
+
+  \end{scope}
+}
+
+
+\def \JKFFrise (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offset(x, y)
+	% 2nd param = title
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color 
+	% 6th param = ID for pin connections
+
+  \begin{scope}[shift={(#1)}]
+	% rect bloc
+    \draw [line width = 1.4, fill = #5]
+		(0.0, 0.0) rectangle (#3, #4);			
+	% EDGE triangle
+	\draw [line width=1.2]
+		(0.0, {#4/2.0 + 0.15}) --++ (0.2, -0.15) --++(-0.2, -0.15);   
+   %\draw [line width=1.2, fill = #5] 
+		%(-0.1, {#4/2}) circle (0.1);  % inversion symbol
+	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $}; 	% text of block
+
+    \draw [line width=1.5] 
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (K#6); % input wire
+    \draw [line width=1.5] 
+		(-0.2, {#4/2.0}) --++({-1*#3+0.2}, 0.0) coordinate (CLK#6); % clock
+
+    \draw [line width=1.5] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (J#6);	% input 
+
+    \draw [line width=1.5] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw [line width=1.5] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6); % Qbar
+
+
+	\coordinate (K) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (J) at (0.0+0.2, {#4 - 0.2});
+	\coordinate (QB) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 -0.2, #4 - 0.4);		% Q
+
+	\draw (K) node[]{\small $K$}; 
+	\draw (J) node[]{\small $J$}; 
+	\draw (Q) node[]{\small $Q$}; 
+	\draw (QB) node[]{\small $\overline{Q}$}; 	
+
+  \end{scope}
+}
+
+
+
+\def \JKFFfall (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offset (x, y)
+	% 2nd param = title
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color 
+	% 6th param = ID for pin connections
+
+  \begin{scope}[shift={(#1)}]
+	% rect bloc
+    \draw [line width = 1.4, fill = #5]
+		(0.0 , 0.0) rectangle (#3, #4);			
+	% EDGE triangle
+	\draw [line width=1.2]
+		(0.0, {#4/2.0 + 0.15}) --++ (0.2, -0.15) --++(-0.2, -0.15);   
+   \draw [line width=1.2, fill = #5] 
+		(-0.1, {#4/2}) circle (0.1);   % inversion symbol
+	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $}; 	% text of block
+
+    \draw [line width=1.5] 
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (K#6); % input wire
+    \draw [line width=1.5] 
+		(-0.2, {#4/2.0}) --++({-1*#3+0.2}, 0.0) coordinate (CLK#6); % clock
+
+    \draw [line width=1.5] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (J#6);	% input 
+
+    \draw [line width=1.5] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw [line width=1.5] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6); % Qbar
+
+
+	\coordinate (K) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (J) at (0.0+0.2, #4 - 0.2);
+	\coordinate (QB) at (#3-0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 -0.2, #4 - 0.4);		% Q
+
+	\draw (K) node[]{\small $K$}; 
+	\draw (J) node[]{\small $J$}; 
+	\draw (Q) node[]{\small $Q$}; 
+	\draw (QB) node[]{\small $\overline{Q}$}; 	
+
+  \end{scope}
+}
+
+
+% Latch JK active on 'ON' state
+\def\JKLATCHon (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offset (x, y)
+	% 2nd param = title
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color
+	% 6th param = ID for pin connections
+
+  \begin{scope}[shift={(#1)}]
+
+    \draw [line width = 1.5, fill = #5] 
+		(0.0, 0.0) rectangle (#3, #4);			% rect block
+
+	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $}; 			% name of block
+
+    \draw [line width=1.5]
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (K#6);		% input wire
+    \draw [line width=1.5] 
+		(0.0, {#4/2.0}) --++(-1*#3, 0.0) coordinate (CLK#6); % clock 
+
+    \draw [line width=1.5] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (J#6);	% input 
+
+    \draw [line width=1.5] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw [line width=1.5] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+
+	\coordinate (K) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (J) at (0.0+0.2, {#4 - 0.2});
+	\coordinate (QB) at (#3 - 0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 - 0.2, #4 - 0.4);		% Q
+
+	\draw (K) node[]{\small $K$}; 
+	\draw (J) node[]{\small $J$}; 
+	\draw (Q) node[]{\small $Q$}; 
+	\draw (QB) node[]{\small $\overline{Q}$}; 	
+
+  \end{scope}
+}
+
+
+
+% Latch JK active on 'OFF' state
+\def \JKLATCHoff (#1)#2#3#4#5#6 {%
+	% 1st param = shift or offset (x, y) 
+	% 2nd param = title 
+	% 3rd param = X dimension of rect
+	% 4th param = Y dimension of rect
+	% 5th param = fill color
+
+  \begin{scope}[shift={(#1)}]
+
+    \draw [line width=1.5, fill = #5] 
+		(0.0, 0.0) rectangle ({#3}, {#4});			% rect block
+
+-	\draw ({#3/2.0}, -0.5) node[]{$ (#2) $}; 		% name of block
+
+    \draw [line width=1.5]
+		(0.0, 0.0 + 0.2) --++ (-0.5, 0.0) coordinate (K#6);		% input wire
+    \draw [line width=1.5] 
+		(0.0, {#4/2.0}) --++({-(#3)}, 0.0) coordinate (CLK#6); % clock 
+	\draw [line width=1.2, fill = #5] 
+		(-0.1, {#4/2}) circle (0.1);  % inversion symbol 
+
+    \draw [line width=1.5] 
+		(0.0, #4 - 0.2) --++ (-0.5, 0.0) coordinate (J#6);	% input 
+
+    \draw [line width=1.5] 
+		(#3, 0.0 + 0.4) --++(0.5, 0.0) coordinate (QB#6);	% output Q
+    \draw [line width=1.5] 
+		(#3, #4 - 0.4) --++(0.5, 0.0) coordinate (Q#6);	% Qbar
+
+	\coordinate (K) at (0.0+0.2, 0.0 + 0.2);
+	\coordinate (J) at (0.0+0.2, #4 - 0.2);
+	\coordinate (QB) at (#3 - 0.2, 0.0 + 0.4);
+	\coordinate (Q) at (#3 - 0.2, #4 - 0.4);		% Q
+
+	\draw (K) node[]{\small $K$}; 
+	\draw (J) node[]{\small $J$}; 
+	\draw (Q) node[]{\small $Q$}; 
+	\draw (QB) node[]{\small $\overline{Q}$}; 	
+
+  \end{scope}
+}

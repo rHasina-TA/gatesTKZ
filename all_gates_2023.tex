@@ -1,0 +1,496 @@
+%%% modif August 10th 2023 
+% AFNOR symbol for NOT and INVERSION are not ROUND but 
+% triangles!
+
+%\usepackage{ifthen}  % by D. Carlisle, not needed finally 
+
+\def \GenericORShape #1#2#3#4#5 {
+	% 1st param : X width, formerly #3 
+	% 2nd param : offset x, formerly \offx 
+	% 3rd param : formerly \cxy
+	% 4th param : color, formerly #4 
+	% 5th param : ch , \ch 
+	\path [draw, line width=1.2, fill = #4] ({#5*#1*#3+ #2}, 0.0)
+		to [bend right] ({#1*#3 + #2}, {#1*#3/2.0})
+		to [bend right] ({#5*#1*#3 + #2}, {#1*#3})
+		--++ ({-1*#5*#1*#3}, 0.0)
+		.. controls ++({#1/5.0}, {-1*#1/5.0}) and 
+		++({#1/5.0}, {#1/5.0}) .. (#2, 0.0)
+		-- cycle;
+}
+
+
+\def \GenericXORShape #1#2#3#4#5 {
+	% this must have a shorter X width because of eXclusive symbol
+	% at the input side: let think it as the total shape
+	% including eXclusive symbol is now equal to the shape of OR
+
+	% 1st param : X width, formerly #3 
+	% 2nd param : offset x, formerly \offx 
+	% 3rd param : formerly \cxy
+	% 4th param : color, formerly #4 
+	% 5th param : ch , \ch 
+	% 6th param : cxy, \cxy % there is no 6th param
+
+	\path [draw, line width=1.2, fill=#4] ({#5*#1*#3 + #2}, 0.0)
+		to [bend right] ({#1*#3 + #2}, {#1*#3/2.0})
+		to [bend right] ({#5*#1*#3 + #2}, {#1*#3})
+		--++ ({-0.5*#5*#1*#3}, 0.0)  % horizontal part 
+		.. controls ++({#1/5.0}, {-1*#1/5.0}) and 
+		++({#1/5.0}, {#1/5.0})
+		.. ({0.5*#5*#1*#3 + #2}, 0.0)
+		-- cycle;  % also an horizontal part
+		
+	\path [draw, very thick, black] ({#2}, #1*#3)
+		.. controls ++({#1/5.0}, {-1*#1/5.0}) and 
+		++({#1/5.0}, {#1/5.0}) .. ({#2}, 0.0);
+}
+
+
+\def \GenericANDShape #1#2#3 {
+	% #1 is \leg
+	% #2 is \dY
+	% #3 is #6 or FILL color 
+	\path [draw, black, line width=1.2, fill=#3]
+		(#1, 0.0) -- ({0.6*#2 + #1}, 0.0) 
+		.. controls ++(#2*0.5, #2*0.2) and ++ (#2*0.5, -0.2*#2)		
+		.. ({0.6*#2+ #1}, #2) -- (#1, #2) -- cycle;
+}
+
+
+\def \GenericOR #1#2#3#4#5#6 {
+	% 1st param : xshift	
+	% 2nd param : yshift
+	% 3rd param : x dimension
+	% 4th param : nb of INPUTS 
+	% 5th param : ID 
+	% 6th param : color 
+	
+	% 1st param : X width, formerly #3 
+	% 2nd param : offset x, formerly \offx 
+	% 3rd param : formerly \cxy
+	% 4th param : color, formerly #4 
+	% 5th param : ch, \ch
+	% 6th param : cxy, \cxy 
+	% added an 5th param which is the number of INPUTS 
+	
+	\def \cxy {0.7}   % body ratio width 
+	%\def \dY {\cxy*#3}   % height
+	\pgfmathsetmacro{\dY}{\cxy*#3}  % HEIGHT 
+	%\begin{scope}[xshift = #1 cm, yshift = {#2 cm - \dY/2.0 cm}] 
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}] 
+
+	\def \ch  {0.3}
+	\pgfmathsetmacro {\leg}{0.25*\dY}
+	\pgfmathsetmacro {\offx}{0.12*\dY}
+	% all is now shifted \offx to the right!
+	% a) draw the output line first 
+	\draw [line width=1.2, black] ({\dY+\offx}, {\dY/2}) %!!!bdr
+		--++(\leg, 0.0) coordinate (OUTOR#5); 
+	% b) draw inputs 
+	\pgfmathsetmacro {\k}{2*#4}   % k = 2*N (nb of inputs) 
+	\foreach \itt in {1, 2,...,#4} {
+		\pgfmathsetmacro{\it}{2*\itt-1}
+		\draw [line width=1.2, black] ({2*\leg}, {\dY-\it*\dY/\k})
+		--++({-2*\leg}, 0.0) coordinate(INOR#5\itt);
+	}		
+	% c) draw the gate shape == now replaced by 'GenericORShape' 
+	% \path [draw, line width=1.2, fill = #4] ({\ch*#3*\cxy+\offx}, 0.0)
+		% to [bend right] ({#3*\cxy+\offx}, {(#3)*\cxy/2.0})
+		% to [bend right] ({\ch*#3*\cxy+\offx}, {#3*\cxy})
+		% --++ ({-1*\ch*#3*\cxy}, 0.0)
+		% .. controls ++({#3/5.0}, {-1*#3/5.0}) and 
+		% ++({#3/5.0}, {#3/5.0}) .. (\offx, 0.0)
+		% -- cycle; 
+	\GenericORShape{#3}{\offx}{\cxy}{#6}{\ch}
+	\end{scope}
+}
+
+
+\def \GenericNOR #1#2#3#4#5#6 {
+	% added an 5th param which is the number of INPUTS 
+	\GenericOR{#1}{#2}{#3}{#4}{#5}{#6}
+	
+	\def \cxy {0.70}   % body ratio width 	
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}] 
+	\pgfmathsetmacro {\dY} {#3*\cxy}
+	\pgfmathsetmacro {\leg}{0.3*\dY}
+	\pgfmathsetmacro {\offx}{0.12*\dY}
+	
+	% d) the inversion symbol 
+	\draw [line width=1.2, fill=#6] 
+		({\dY+\offx+0.25*\leg}, {\dY/2}) circle (0.3*\leg); 
+	\end{scope}
+}
+
+
+\def \GenericXOR #1#2#3#4#5#6 {
+	% added an nth param which is the number of INPUTS 
+	\def \cxy {0.7}   % body ratio width 
+
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\def \ch  {0.3}
+ 
+	\pgfmathsetmacro {\leg}{0.25*#3*\cxy}
+	\pgfmathsetmacro {\offx}{0.12*#3*\cxy}
+	% all is now shifted \offx to the right!
+	% a) draw the output line first 
+	\draw [line width=1.2, black] ({#3*\cxy+\offx}, {#3*\cxy/2}) %!!!bdr
+		--++(\leg, 0.0) coordinate (OUTOR#5); 
+	% b) draw inputs 
+	\pgfmathsetmacro {\k}{2*#4}   % k = 2*N (nb of inputs) 
+	\foreach \itt in {1, 2,...,#4} {
+		\pgfmathsetmacro{\it}{2*\itt-1}
+		\draw [line width=1.2, black] ({2*\leg}, {#3*\cxy-\it*#3*\cxy/\k})
+		--++({-2*\leg}, 0.0) coordinate(INOR#5\itt);
+	}		
+	% c) draw the gate shape 
+	\GenericXORShape{#3}{\offx}{\cxy}{#6}{\ch}
+	\end{scope}
+}
+
+
+\def \GenericXNOR #1#2#3#4#5#6 {
+	% % added an 5th param which is the number of INPUTS 
+	% after factorization 20th /09/21 
+	\GenericXOR{#1}{#2}{#3}{#4}{#5}{#6}
+		
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\def \cxy {0.7}   % body ratio width 
+	\pgfmathsetmacro {\dY} {#3*\cxy} 
+	\pgfmathsetmacro {\leg}{0.3*\dY}
+	\pgfmathsetmacro {\offx}{0.12*\dY}	
+	% d) the inversion symbol 
+	\draw [line width=1.2, fill=#6] 
+		({\dY + \offx +0.25*\leg}, {\dY/2}) circle (0.3*\leg); 
+	\end{scope}
+}
+
+
+% FOR AND and NAND gates 
+\def \GenericAND #1#2#3#4#5#6 {
+	% 1st param : xshift	
+	% 2nd param : yshift
+	% 3rd param : x dimension
+	% 4th param : nb of INPUTS 
+	% 5th param : ID 
+	% 6th param : color 
+
+	\def \cxy {0.6}   % body ratio width
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	%\begin{scope}[xshift = #1 cm, yshift = {#2 cm - \dY/2.0 cm}] 
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2.0*\cxy cm}]
+	%\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3*\cxy/2.0 cm}] %doesn't work
+	\def \ch  {0.3}
+
+	\pgfmathsetmacro {\leg}{0.2*#3}
+	% a) output leg 
+	\draw [line width=1.2, black]
+		({0.75*#3}, {\dY/2.0}) --++(0.25*#3, 0.0) coordinate (OUTAND#5);
+	
+	% b) draw inputs 
+	\pgfmathsetmacro {\k}{2*#4}   % k = 2*N (nb of inputs) 
+	\foreach \itt in {1, 2,...,#4} {
+		\pgfmathsetmacro{\it}{2*\itt-1}
+		\draw [line width=1.2, black] 
+			(\leg, {\dY - \it*\dY/\k}) --++ (-1*\leg, 0.0)	
+			coordinate(INAND#5\itt);
+	}
+
+	% this shape is 0.7 * WIDTH , extra legs are 0.15*2=0.3 off 
+	\GenericANDShape{\leg}{\dY}{#6}
+	% now replaced by 'GenericANDShape
+	% \path [draw, black, line width=1.2, fill=#6]
+		% (\leg, 0.0) -- ({0.6*\dY + \leg}, 0.0) 
+		% .. controls ++(\dY*0.5, \dY*0.2) and ++ (\dY*0.5, -0.2*\dY)		
+		% .. ({0.6*\dY+ \leg}, \dY) -- (\leg, \dY) -- cycle;
+		% % to [bend right] ({0.80*#3}, {\dY/2.0})
+		% % to [bend right] ({0.6*\dY+ \offx}, \dY) -- (\offx, \dY)
+		% % -- cycle; 
+	
+	\end{scope} 
+}
+
+
+%FOR AND and NAND gates 
+\def \GenericNAND #1#2#3#4#5#6 {
+
+	% 1st param : xshift	
+	% 2nd param : yshift
+	% 3rd param : x dimension
+	% 4th param : nb of INPUTS 
+	% 5th param : ID 
+	% 6th param : color 
+	\GenericAND{#1}{#2}{#3}{#4}{#5}{#6}
+
+	\def \cxy {0.6}   % body ratio width
+	%\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2.0*\cxy cm}]
+	\pgfmathsetmacro {\leg}{0.2*#3}
+	\draw [line width=1.2, fill=#6] 
+		({\dY + \leg +0.25*\leg}, {\dY/2}) circle (0.3*\leg); 
+	\end{scope}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% GENERIC GATES : ALL SHAPE SHARE THE SAME FORM FACTOR 
+%%% GENERIC GATES : ALL SHAPE SHARE THE SAME FORM FACTOR 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \def \ExpliciteGateShape #1#2#3#4#5 {  % formerly
+\def \SimpleRectBlock #1#2#3#4#5 {
+	% simple rect bloc 
+	% #1: X dimension 
+	% #2: cxy dimension 
+	% #3: offx : offset x 
+	% #4: BOX Name, as node 
+	% #5: fill color
+	\path [draw, black, line width = 1.2, fill = #5] 
+		(#3, 0.0) rectangle +({#1 - 2*#3}, {#1*#2});
+	% label 
+	\node [ ] (t) at ({#1/2.0}, {#1*#2/2.0}) {\small #4};
+}
+
+
+\def \ExpliciteGate #1#2#3#4#5#6#7 {
+	% 1st and 2nd param : shift 
+	% 3rd  : X dimensions 
+	% 4th : TYPE : OR/AND/etc. 
+	% 5th: nb of inputs 
+	% 6th: ID 
+	% 7th: color fill
+	\def \cxy {0.5}   % body ratio width
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	%  a) draw output 
+	\draw[line width=1.2, black] 
+		(#3 - \leg, {\dY/2.0}) --++ (\leg, 0.0)
+		coordinate(out#6) ;
+	 % b) draw inputs 
+	%\ifthenelse{#5 == 1}
+	%{
+		%\draw [line width=1.2, black] 
+			%(\leg, {\dY/2.0}) --++ (-1*\leg, 0.0)	
+				%coordinate(OIG#6);
+	%}
+	%{
+	\pgfmathsetmacro {\k}{2*#5}   % k = 2*N (nb of inputs) 
+	\foreach \itt in {1,...,#5} {
+		% the classic {1,2,...,#5} is giving one more leg for #5==1
+		\pgfmathsetmacro{\it}{2*\itt-1}
+		\draw [line width=1.2, black] 
+			(\leg, {\dY - \it*\dY/\k}) --++ (-1*\leg, 0.0)	
+				coordinate(in#6\itt);
+			%	coordinate(IOR#6\itt);
+	}
+	%}
+	
+	%\ExpliciteGateShape{#3}{\cxy}{\leg}{#4}{#7}  % formerly 
+	\SimpleRectBlock{#3}{\cxy}{\leg}{#4}{#7}  %string don't pass
+	\end{scope}
+}
+
+%% august 10th 2023
+\def \ExpliciteNonGateShape #1#2#3#4#5#6#7 {
+	% this is AFNOR implementation of NOT Gate, that is: "porte NON"
+	% 1st and 2nd param : shift 
+	% 3rd  : X dimensions 
+	% 4th : TYPE : OR/AND/etc. 
+	% 5th: nb of inputs 
+	% 6th: ID 
+	% 7th: color fill
+	%\ExpliciteOneInputGate{#1}{#2}{#3}{#4}{#5}{#6}{#7}
+	\ExpliciteGate{#1}{#2}{#3}{#4}{#5}{#6}{#7}
+
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	\def \cxy {0.5}   % body ratio width
+	% d) The inversion symbol, instead of a round we put a 
+	% oblique bar 
+	\draw [line width=1.2, fill=#7] 
+		({#3 - \leg + 0.5*\leg}, {\dY/2.0}) --++ 
+			({-0.5*\leg}, {0.5*\leg});
+	%\draw [line width=1.2, fill=#7] 			
+	%	({#3 - \leg + 0.3*\leg}, {\dY/2}) circle (0.3*\leg);	
+	\end{scope}
+}
+
+
+% after a bug found for ONE INPUT gate
+% this was created for 
+\def \ExpliciteOneInputGate #1#2#3#4#5#6 {
+	% 1st and 2nd param : shift 
+	% 3rd  : X dimensions 
+	% 4th : TYPE : OR/AND/etc. 
+	%%% 5th: nb of inputs 
+	% 5th: ID 
+	% 6th: color fill
+	\def \cxy {0.5}   % body ratio width
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	%  a) draw output 
+	\draw[line width=1.2, black] 
+		(#3 - \leg, {\dY/2.0}) --++ (\leg, 0.0)
+		coordinate(out#5) ;
+	 % b) draw inputs 
+	%\pgfmathsetmacro {\k}{2*#5}   % k = 2*N (nb of inputs) 
+	% \foreach \itt in {1, 2,...,#5} {
+		% \pgfmathsetmacro{\it}{2*\itt-1}
+		\draw [line width=1.2, black] 
+			(\leg, {\dY/2.0}) --++ (-1*\leg, 0.0)	
+				coordinate(OIG#5);
+	% }
+	\ExpliciteGateShape{#3}{\cxy}{\leg}{#4}{#6}  %string don't pass
+	\end{scope}
+}
+
+
+
+\def \ExpliciteNotGateShape #1#2#3#4#5#6#7 {
+	% 1st and 2nd param : shift 
+	% 3rd  : X dimensions 
+	% 4th : TYPE : OR/AND/etc. 
+	% 5th: nb of inputs 
+	% 6th: ID 
+	% 7th: color fill
+	\ExpliciteGate{#1}{#2}{#3}{#4}{#5}{#6}{#7}
+
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	\def \cxy {0.5}   % body ratio width
+	% d) The inversion symbol
+	\draw [line width=1.2, fill=#7] 
+		({#3 - \leg + 0.3*\leg}, {\dY/2}) circle (0.3*\leg);	
+	\end{scope}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%% EN %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+\def \GateShape #1#2#3#4#5 {
+	% for YES, AMpli, NOT gate , leg is 0.3*{X dim}
+	% so shape is 0.4*{X dim} = dX, and dY < dX, let it be 0.3*{X dim} 
+	% #1 = x dimension
+	% #2 = cxy  
+	% #3 = x shift  
+	% #4 = box name, as node text 
+	% #5 = fill color 
+	\path [draw, line width=1.2, black, fill=#5]
+		(#3, 0.0) --++({0.4*#1}, {0.5*#2*#1}) 
+		--++ ({-0.4*#1}, {0.5*#2*#1}) -- cycle; 
+	\node [] (t) at ({#1/2.0}, #1*#2/2.0) {\small #4};
+}
+
+
+\def \YesGate #1#2#3#4#5#6 {
+	% #1 = xshift 
+	% #2 = yshift 
+	% #3 = x dimension 
+	% #4 = ID 
+	% #5 = text mark
+	% #6 = fill 
+	\def \cxy {0.4}   % body ratio width
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.3*#3} 
+	%  a) draw output 
+	\draw[line width=1.2, black] 
+		(#3 - \leg, {\dY/2.0}) --++ (\leg, 0.0)
+		coordinate (out#4);
+	
+	% b) input [ONE] 
+	\draw[line width=1.2, black] 
+		(\leg, {\dY/2.0}) --++ (-1*\leg, 0.0)
+		coordinate (in#4);
+	\GateShape{#3}{\cxy}{\leg}{#5}{#6} 
+	\end{scope}
+}
+
+
+\def \NotGate #1#2#3#4#5#6 {
+	% ANGLOPHONE
+	% #1 = xshift 
+	% #2 = yshift 
+	% #3 = x dimension 
+	% #4 = ID 
+	% #5 = text mark
+	% #6 = fill 
+	\YesGate{#1}{#2}{#3}{#4}{#5}{#6} 
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\def \cxy {0.4}
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.3*#3} 
+	\def \cxy {0.5}   % body ratio width
+	% d) The inversion symbol
+	\draw [line width=1.2, fill=#6] 
+		({#3 - \leg + 0.2*\leg}, {\dY/2}) circle (0.2*\leg);	
+	\end{scope}
+}
+
+
+%%  August 8th 2023, after noting an error for ONE input
+%% explicit gate, finished this today!
+\def \ExpliciteYesGate #1#2#3#4#5#6 {
+	% FOR Exceptional YES (or NOT) gate! 
+	% #1 is X shift, #2 is Y shift
+	% #3 is X width
+	% #4 is ID 
+	% inspired by \ExpliciteGate, takes the place of #6
+	% #5 is label (string label), takes the place of #4
+	% #6 is fill color, takes the place of #7
+	\def \cxy {0.5}   % body ratio width
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	% a) draw the output 
+	\draw[line width=1.2, black] 
+		(#3 - \leg, {\dY/2.0}) --++ (\leg, 0.0) coordinate(out#4) ;
+	% b) draw THE ONLY one input !!!
+	\draw[line width = 1.2, black]
+		(0.0, {\dY/2}) --++ (\leg, 0.0) coordinate (in#4);
+	%\ExpliciteGateShape{#3}{\cxy}{\leg}{#5}{#6}  %it orks but not 
+	\SimpleRectBlock{#3}{\cxy}{\leg}{#5}{#6}  %it orks but not 
+	\end{scope}
+}
+
+
+\def \ExpliciteNotGate #1#2#3#4#5#6 {
+	% FOR Exceptional Explicite NOT gate! 
+	% #1 is X shift, #2 is Y shift
+	% #3 is X width
+	% #4 is ID 
+	% inspired by \ExpliciteGate, takes the place of #6
+	% #5 is label (string label), takes the place of #4
+	% #6 is fill color, takes the place of #7
+	\def \cxy {0.5}   % body ratio width
+	\begin{scope}[xshift = #1 cm, yshift = {#2 cm - #3/2*\cxy cm}]
+	\pgfmathsetmacro {\dY}{\cxy*#3}  % HEIGHT 
+	\pgfmathsetmacro {\leg}{0.2*#3} 
+	% a) draw the output 
+	\draw[line width=1.2, black] 
+		(#3 - \leg, {\dY/2.0}) --++ (\leg, 0.0) coordinate(out#4) ;
+	% b) draw THE ONLY one input !!!
+	\draw[line width = 1.2, black]
+		(0.0, {\dY/2}) --++ (\leg, 0.0) coordinate (in#4);
+	\SimpleRectBlock{#3}{\cxy}{\leg}{#5}{#6}  %string don't pass
+	% d) The inversion symbol
+	\draw [line width=1.2, fill=#6] 
+		({#3 - \leg + 0.3*\leg}, {\dY/2}) circle (0.3*\leg);
+	\end{scope}
+}
+

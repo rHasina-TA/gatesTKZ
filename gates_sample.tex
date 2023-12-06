@@ -1,0 +1,238 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}   % _ in verbatim
+\usepackage{amsmath}
+
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{pgf, tikz}
+%\usetikzlibrary{shapes,arrows}
+%%\usepackage{circuitikz}			%
+%\tikzstyle{every node}=[font=\small]
+\tikzstyle{every path}=[line width=0.8pt,line cap=round, line join=round]
+
+\usepackage{mathptmx}
+
+%% GEOMETRY
+\usepackage[width=1.00cm, height=1.00cm, left=3.2cm, right=2.4cm, 
+top=1.80cm, bottom=1.00cm]{geometry}
+
+
+\input{all_gates_2023.tex} 
+\input{all_FF.tex}   % flip-flop defs 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+%
+
+%\newpage
+%.\par \putSpace \par \vspace{1.0cm} \par
+\par\noindent 
+\leftskip = -2.4 cm
+
+\begin{tikzpicture}
+
+\node[] (1) at (-6.0, 1.6) {\large Explicite};
+\node[] (1) at (-3.0, 1.6) {\large Fr};
+\node[] (1) at (-0.0, 1.6) {\large En};
+
+\node[] (1) at (4.0, 1.6) {\large Explicite};
+\node[] (1) at (7.0, 1.6) {\large Fr};
+\node[] (1) at (10.0, 1.6) {\large En};
+
+\ExpliciteYesGate{-7.0}{0.6}{2.0}{Y}{YES}{white}
+\ExpliciteYesGate{-4.0}{0.6}{2.0}{Y2}{1}{white}
+\YesGate{-1.0}{0.6}{2.0}{y}{}{white} %{blue!20}
+
+\ExpliciteYesGate{3.0}{0.6}{2.0}{N}{NOT}{white}
+\ExpliciteNonGateShape{6.0}{0.6}{2.0}{1}{1}{N4}{white}
+\NotGate{9.0}{0.6}{2.0}{1}{}{white}
+
+
+%% AND and NAND
+\ExpliciteGate{-7.0}{-1.2}{2.0}{AND}{4}{Y}{white}
+\ExpliciteGate{-4.0}{-1.2}{2.0}{\large $\&$}{4}{aaf}{white}
+\GenericAND{-1.0}{-1.2}{2.0}{4}{a4}{white} %{blue!20}
+
+\ExpliciteGate{3.0}{-1.2}{2.0}{NAND}{3}{N}{white}
+\ExpliciteNonGateShape{6.0}{-1.2}{2.0}{\large $\&$}{3}{naf}{white}
+\GenericNAND{9.0}{-1.2}{2.0}{3}{na3}{white} %{blue!20}
+%
+%%% OR and NOR 
+\ExpliciteGate{-7.0}{-3.0}{2.0}{OR}{5}{Y}{white}
+\ExpliciteGate{-4.0}{-3.0}{2.0}{\large $\geq 1$}{5}{oaf}{white}
+\GenericOR{-1.0}{-3.0}{2.0}{5}{o5}{white} %{blue!20}
+%
+\ExpliciteGate{3.0}{-3.0}{2.0}{NOR}{2}{N}{white}  %here
+\ExpliciteNonGateShape{6.0}{-3.0}{2.0}{\large $\geq 1$}{2}{noaf}{white}
+\GenericNOR{9.0}{-3.0}{2.0}{2}{na3}{white} %{blue!20}
+%
+%%% XOR and XNOR 
+\ExpliciteGate{-7.0}{-4.8}{2.0}{XOR}{5}{Y}{white}
+\ExpliciteGate{-4.0}{-4.8}{2.0}{\large $=1$}{5}{oaf}{white}
+\GenericXOR{-1.0}{-4.8}{2.0}{5}{o5}{white} %{blue!20}
+%
+\ExpliciteGate{3.0}{-4.8}{2.0}{XNOR}{4}{N}{white}
+\ExpliciteNonGateShape{6.0}{-4.8}{2.0}{\large $=1$}{4}{noaf}{white}
+\GenericXNOR{9.0}{-4.8}{2.0}{4}{xno4}{white} %{blue!20}
+\end{tikzpicture}  
+\par \vspace{0.4cm}  \hrule \par \vspace{0.4cm}
+\leftskip = 0.0 cm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{center}
+\begin{tikzpicture}
+
+\ExpliciteNonGateShape{-6.0}{1.5}{2.4}{\large $\&$}{4}{nd4}{white}
+\ExpliciteNonGateShape{-3.0}{1.5}{1.6}{\large $\&$}{2}{nd2}{white}
+
+\GenericNAND{-6.0}{-0.6}{2.4}{4}{nand4}{white}
+\GenericNAND{-3.0}{-0.6}{1.6}{2}{nand2}{white}
+
+\GenericNOR{6.0}{0.0}{2.4}{4}{o4}{yellow!76!blue}
+\GenericNOR{3.0}{1.8}{1.2}{2}{oa1}{yellow!56!blue}
+\GenericNOR{3.0}{0.6}{1.2}{2}{oa0}{yellow!56!blue}
+\GenericNOR{3.0}{-0.6}{1.2}{2}{ob1}{yellow!56!blue}
+%\begin{scope}[rotate = 180]
+\GenericNOR{3.0}{-1.8}{1.2}{2}{ob0}{cyan!40}
+%\end{scope}
+% wires and labels
+
+\node[left] (x1) at (innd41) {$x_1$};
+\node[left] (x0) at (innd42) {$x_0$};
+\node[left] (y1) at (innd43) {$y_1$};
+\node[left] (y0) at (innd44) {$y_0$};
+
+\draw[very thick, blue] (outnd4) --++ (0.4, 0.0) |- (innd21);
+\draw[very thick, blue] (outnd4) --++ (0.4, 0.0) |- (innd22);
+
+\node[left] (a) at (INANDnand41) {$A_1$};
+\node[left] (a) at (INANDnand42) {$A_0$};
+\node[left] (a) at (INANDnand43) {$B_1$};
+\node[left] (a) at (INANDnand44) {$B_0$};
+
+\draw[very thick] (OUTANDnand4) --++ (0.4, 0.0) |- (INANDnand21);
+\draw[very thick] (OUTANDnand4) --++ (0.4, 0.0) |- (INANDnand22);
+
+\node[left] (a1) at (2.2, 1.8) {$A_1$};
+\node[left] (a0) at (2.2, 0.6) {$A_0$};
+\node[left] (b1) at (2.2, -0.6) {$B_1$};
+\node[left] (b0) at (2.2, -1.8) {$B_0$};
+
+\draw[very thick] (OUTANDnand2) --++(0.3, 0.0) node[right] {$c_3$};
+
+\draw[very thick] (OUTORo4) --++(0.3, 0.0) node[right] {$c_3$};
+
+\draw[very thick] (a1) --++(1.0, 0.0) |- (INORoa11);
+\draw[very thick] (a1) --++(1.0, 0.0) |- (INORoa12);
+\draw[very thick] (a0) --++(1.0, 0.0) |- (INORoa01);
+\draw[very thick] (a0) --++(1.0, 0.0) |- (INORoa02);
+
+\draw[very thick] (b1) --++(1.0, 0.0) |- (INORob11);
+\draw[very thick] (b1) --++(1.0, 0.0) |- (INORob12);
+\draw[very thick] (b0) --++(1.0, 0.0) |- (INORob01);
+\draw[very thick] (b0) --++(1.0, 0.0) |- (INORob02);
+
+\draw[very thick] (OUTORoa1) --++(1.2, 0.0) |- (INORo41);
+\draw[very thick] (OUTORoa0) --++(0.9, 0.0) |- (INORo42);
+\draw[very thick] (OUTORob1) --++(0.9, 0.0) |- (INORo43);
+\draw[very thick] (OUTORob0) --++(1.2, 0.0) |- (INORo44);
+
+\end{tikzpicture}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{center}
+\begin{tikzpicture}
+\GenericNAND{0.0}{0.7}{1.4}{2}{na1}{yellow!82}
+\GenericNAND{0.0}{-0.7}{1.4}{2}{na2}{yellow!82}
+\GenericNAND{2.2}{0.0}{1.4}{2}{na3}{yellow!82}
+
+\draw [very thick] (-0.6, 0.7) --++ (0.6, 0.0) |- (INANDna11);
+\draw [very thick] (-0.6, 0.7) --++ (0.6, 0.0) |- (INANDna12);
+
+\draw [very thick] (-0.6, -0.7) --++ (0.6, 0.0) |- (INANDna21);
+\draw [very thick] (-0.6, -0.7) --++ (0.6, 0.0) |- (INANDna22);
+
+\draw [very thick] (OUTANDna1) --++ (0.6, 0.0) |- (INANDna31);
+\draw [very thick] (OUTANDna2) --++ (0.6, 0.0) |- (INANDna32);
+
+\node[left] (x1) at (-0.64, 0.7) {\large $x_1$};
+\node[left] (x2) at (-0.64, -0.7) {\large $x_2$};
+\draw [very thick]  (OUTANDna3)  --++(0.2, 0.0) 
+node[right] {\large $s = ?$};
+
+\begin{scope}[xshift = 12.6 cm, rotate=180]
+\ExpliciteGate{0.0}{0.7}{1.9}
+{ \textcolor[rgb]{1.0, 1.0, 1.0}{NAND}}{2}{NA}{black}
+\ExpliciteGate{0.0}{-0.7}{1.9}
+{\textcolor[rgb]{1.0, 1.0, 1.0}{NAND}}{2}{NB}{black}
+\ExpliciteGate{3.0}{0.0}{1.9}
+{ \textcolor[rgb]{1.0, 1.0, 1.0}{NAND}}{2}{NC}{black}
+
+\draw[very thick] (inNA1) |- (-0.6, 0.7);
+\draw[very thick] (inNA2) -- (0.0, 0.7);
+
+\draw[very thick] (inNB1) |- (-0.6, -0.7);
+\draw[very thick] (inNB2) -- (0.0, -0.7);
+
+\draw [very thick] (outNA) --++(-0.2, 0.3)  -| (inNC1);
+\draw [very thick] (outNB) --++ (0.4, 0.0) |- (inNC2);
+
+\node[right] (x1) at  (-0.6, 0.7) {$x_1$};
+\node[right] (x2) at  (-0.6, -0.7) {$x_6$};
+\node[left] (s) at (outNC) {$s=?$};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\par \vspace{0.6cm} 
+\begin{tikzpicture}[scale=1.0]
+\tikzstyle{joinn} = [line width = 1.2 pt, line cap = round, line join = round] 
+\tikzstyle{joinp} = [line width = 1.2 pt, ->, >=latex]
+%\begin{scope}[rotate=90]
+\JKFFfall(0.0, 0.0){A}{1.2}{1.8}{green!10}{JK0}
+\DFFrise(4.0, 0.0){B}{1.2}{1.8}{green!10}{DFF0}
+\SRFF(8, 0.0){C}{1.2}{1.8}{green!10}{SR1}
+\JKLATCHoff(12.0, 0.0){D}{1.2}{1.4}{green!10}{J}
+
+\draw[joinp, blue] (QBJK0) --++(0.4, 0.0) |- ++ (8.0, -1.2) |- (CLKJ);
+\draw[joinn] (QJK0) --++(0.8, 0.0) |- (CkDFF0);
+
+\end{tikzpicture}
+
+\par \vspace{0.8 cm}
+
+
+\begin{tikzpicture}[scale=1.0]
+\tikzstyle{joinn} = [line width = 1.2 pt, line cap = round, line join = round] 
+\tikzstyle{joinp} = [line width = 1.2 pt, ->, >=latex]
+\begin{scope}[rotate=90]
+\JKFFfall(0.0, 0.0){A}{1.2}{1.8}{green!50}{JK0}
+\end{scope}
+\DFFrise(4.0, 0.0){B}{1.2}{1.8}{green!50}{DFF0}
+\SRFF(8, 0.0){C}{1.2}{1.8}{green!50}{SR1}
+\JKLATCHon(12.0, 0.0){D}{1.2}{1.4}{green!50}{J}
+
+\draw[joinp, blue] (QBJK0) --++(0.4, 0.0) |- ++ (8.0, -1.2) |- (CLKJ);
+\draw[joinn] (QJK0) --++(0.8, 0.0) |- (CkDFF0);
+
+\end{tikzpicture}
+
+\end{document}
